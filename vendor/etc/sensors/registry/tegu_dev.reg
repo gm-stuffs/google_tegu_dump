@@ -1,0 +1,113 @@
+#
+# Tegu sensor device configuration registry script for the dev stage.
+#
+# Source of truth: go/pixel-sensor-list
+#
+
+#
+# CDT Filter <CDT>:<mask>
+# CDT format: <0xPPPPSJIV> (P:Product, S:Stage, J:Major, I:Minor, V:Variant)
+# go/pixel-cdt-zuma-pro
+#
+
+?+0xB1000:0xFFFFF000
+
+#
+# Record reg_script.
+#
+
++/
+reg_script=tegu_dev.reg
+
+#
+# Sensors
+#
+
+# MAG 1 (MMC5616WA)
++/dev/mmc5616/0/mag
+  name=MMC5616 Magnetometer 0
+
+# MAG 2 (MMC5616WA)
++/dev/mmc5616/1
+  bus_name=i2c0
+  bus_freq_hz=400000
+  bus_addr=0x30
+  priority=1
++/dev/mmc5616/1/mag
+  orientation_transform=1 -2 -3
+  name=MMC5616 Magnetometer 1
+
+# BARO (ICP20100)
++/dev/icp20100/0
+  bus_name=i2c0
+  bus_freq_hz=400000
+  bus_addr=0x64
+  intr_id=47
+  min_period_us=25000
++/dev/icp20100/0/baro
++/dev/icp20100/0/temp
+
+# ALSP (TMD3733)
++/dev/tmd3733/0
+  vsync_delay_ns=574770
+
++/dev/tmd3733/0/als
+  lux_scale=4.31935
+  c_coef=1
+  r_coef=-0.82279221
+  g_coef=0.49261751
+  b_coef=-0.6698253
+  itime_table_brightness=592 901 1115 2565 3427 4096
+  itime_table=1600000 181750 181750 181750 181750 1600000
+  max_gain_table=11 10 10 10 10 10
+  # int{<hard_stop> <C_boost> <R_boost> <G_boost> <B_boost>}
+  # max_gain[color] = MIN(hard_stop, max_gain_table[brightness] +
+  #                                  max_gain_chan_boost[color])
+  max_gain_chan_boost=11 0 1 1 1
+  # Step-size (in EM slots) for each rotation.
+  rotation_step_size=1
+
+  clear_gain12_ratio=0.0625
+  red_gain12_ratio=0.0625
+  green_gain12_ratio=0.0625
+  blue_gain12_ratio=0.0625
+
+  clear_gain11_ratio=0.125
+  red_gain11_ratio=0.125
+  green_gain11_ratio=0.125
+  blue_gain11_ratio=0.125
+
+  clear_gain10_ratio=0.25
+  red_gain10_ratio=0.25
+  green_gain10_ratio=0.25
+  blue_gain10_ratio=0.25
+
+  clear_gain9_ratio=0.5
+  red_gain9_ratio=0.5
+  green_gain9_ratio=0.5
+  blue_gain9_ratio=0.5
+
+  clear_gain8_ratio=1.0
+  red_gain8_ratio=1.0
+  green_gain8_ratio=1.0
+  blue_gain8_ratio=1.0
+
+  clear_gain7_ratio=2.0
+  red_gain7_ratio=2.0
+  green_gain7_ratio=2.0
+  blue_gain7_ratio=2.0
+
+  clear_gain6_ratio=4.0
+  red_gain6_ratio=4.0
+  green_gain6_ratio=4.0
+  blue_gain6_ratio=4.0
+
++/dev/tmd3733/0/prox
+  pulse_count=8
+  vcsel_ma=10
+  far_threshold=40
+  near_threshold=90
+  filter_len=4
+  skip_count=0
+  gain1=8
+  gain2=2.5

@@ -1,0 +1,218 @@
+#
+# Tegu sensor device configuration registry script for EVT stage.
+#
+# Source of truth: go/pixel-sensor-list
+#
+
+#
+# CDT Filter <CDT>:<mask>
+# CDT format: <0xPPPPSJIV> (P:Product, S:Stage, J:Major, I:Minor, V:Variant)
+# go/pixel-cdt-zuma-pro
+#
+
+?+0xB3000:0xFFFFF000
+
+#
+# Record reg_script.
+#
+
++/
+reg_script=tegu_evt.reg
+
+#
+# Sensors
+#
+
+# MAG 1 (MMC5616WA)
++/dev/mmc5616/0/mag
+  fac_cal_transform=0.9835 0.0129 -0.0294 0.0282 0.9577 0.0092 0.0089 -0.0314 1.0395 0 0 0
+
+# ALSP (TMD3733)
++/dev/tmd3733/0
+  vsync_delay_ns=1474320
+
++/dev/tmd3733/0/als
+  lux_scale=4.31935
+  c_coef=1
+  r_coef=-0.82279221
+  g_coef=0.49261751
+  b_coef=-0.6698253
+  c_modified_coef=0.5
+  r_modified_coef=0.0
+  g_modified_coef=0.0
+  b_modified_coef=0.0
+  itime_table_brightness=592 901 1115 2565 3427 4096
+  itime_table=1600000 1600000 300000 300000 300000 1600000
+  max_gain_table=11 10 10 10 10 10
+  # int{<hard_stop> <C_boost> <R_boost> <G_boost> <B_boost>}
+  # max_gain[color] = MIN(hard_stop, max_gain_table[brightness] +
+  #                                  max_gain_chan_boost[color])
+  max_gain_chan_boost=11 0 1 1 1
+  # Step-size (in EM slots) for each rotation.
+  rotation_step_size=1
+
+  clear_gain12_ratio=0.0625
+  red_gain12_ratio=0.0625
+  green_gain12_ratio=0.0625
+  blue_gain12_ratio=0.0625
+
+  clear_gain11_ratio=0.125
+  red_gain11_ratio=0.125
+  green_gain11_ratio=0.125
+  blue_gain11_ratio=0.125
+
+  clear_gain10_ratio=0.25
+  red_gain10_ratio=0.25
+  green_gain10_ratio=0.25
+  blue_gain10_ratio=0.25
+
+  clear_gain9_ratio=0.5
+  red_gain9_ratio=0.5
+  green_gain9_ratio=0.5
+  blue_gain9_ratio=0.5
+
+  clear_gain8_ratio=1.0
+  red_gain8_ratio=1.0
+  green_gain8_ratio=1.0
+  blue_gain8_ratio=1.0
+
+  clear_gain7_ratio=2.0
+  red_gain7_ratio=2.0
+  green_gain7_ratio=2.0
+  blue_gain7_ratio=2.0
+
+  clear_gain6_ratio=4.0
+  red_gain6_ratio=4.0
+  green_gain6_ratio=4.0
+  blue_gain6_ratio=4.0
+
+  # Prox delay itime table in microsecond.
+  # Display HS mode.
+  prox_delay_120hz=3700 5200 5800 5800 6200 6200
+  prox_delay_60hz_hs=11500 12100 13000 13000 13000 13000
+
+  # Histogram Configuration.
+  # Disable until ready.
+  histo_enable=1
+  # Display coordinates go from top left to bottom right.
+  histo_roi_left=400
+  histo_roi_top=150
+  histo_roi_right=550
+  histo_roi_bottom=300
+  # Weights applied to the RBG color samples to calculate luma.
+  # luma values:
+  # luma = W_R * R + W_G * G + WB * B
+  # with W_R + W_G + W_B = 1024
+  histo_weight_r=146
+  histo_weight_g=806
+  histo_weight_b=72
+  #
+  # Leakage calculator configuration. The general format is:
+  #   leakage = luma_term(luma, dbv) * dbv_term(dbv)
+  # The luma_term maps luma into a value and different equations may be used
+  # depending on the current DBV value.
+  # Similar, the dbv_term maps DBV into a value and may also use different
+  # equations.
+  # Each line represents one equation, and is of the format:
+  #   start-dbv end-dbv equation-type {coefficients}
+  # This means the equation applies to the DBV range [start-dbv .. end-dbv].
+  # There are two equation types currently:
+  #    0: Polynominal: c0 + c1L + c2L^2 + .. + ci*L^i
+  #    1: Natural Log: c0 + c1*ln(L + c2)
+  histo_luma_eq0=0 183 0 0e0
+  histo_luma_eq1=184 4096 0 0e0 0.00303
+  histo_dbv_eq0=0 183 0 0e0
+  histo_dbv_eq1=184 901 0 4.32155144e-03 9.35580848e-04 1.50114380e-07
+  histo_dbv_eq2=902 3427 0 -2.71529843E+00 3.42815486E-03 -1.88369049E-07
+  histo_dbv_eq3=3428 4096 0 16
+
+  histo_modified_luma_eq0=0 183 0 0e0
+  histo_modified_luma_eq1=184 4096 0 0e0 0.00303
+  histo_modified_dbv_eq0=0 2100 0 0e0
+  histo_modified_dbv_eq1=2101 3427 0 -3.40000E+00 5.39400E-04 5.18600E-07
+  histo_modified_dbv_eq2=3428 4096 0 0e0
+
+  # The maximum brightness (DBV) value up to which histogram is active.
+  # This value should match one of the itime_table_brightness values.
+  histo_max_brightness=4096
+  # Minimum change needed for a leakage value to be reported, i.e.,
+  # min_change = MAX(min_change_value, current_leakage_val * min_change_rate)
+  histo_min_change_value=0.01
+  histo_min_change_rate=0.01
+  # Histogram polling interval in ms.
+  histo_polling_interval=50
+  # Fallback luma value to use when histogram returns error (e.g., due to DRM).
+  histo_fallback_luma=128.0
+
++/dev/tmd3733/0/prox
+  pulse_count=4
+  vcsel_ma=10
+  far_threshold=40
+  near_threshold=90
+  filter_len=4
+  skip_count=0
+  gain1=8
+  gain2=2.5
+
++/dev/tmd3733/0/panel-b/als
+  itime_table_brightness=637 1180 1181 2565 3628 4096
+  itime_table=1600000 1600000 300000 300000 300000 1600000
+
+  # Prox delay itime table in microsecond.
+  # Display HS mode.
+  prox_delay_120hz=3500 3500 3800 5100 5100 5100
+  prox_delay_60hz_hs=11700 11900 12200 13000 13700 13700
+
+  # Histogram Configuration.
+  # Disable until ready.
+  histo_enable=1
+  # Display coordinates go from top left to bottom right.
+  histo_roi_left=400
+  histo_roi_top=150
+  histo_roi_right=550
+  histo_roi_bottom=300
+  # Weights applied to the RBG color samples to calculate luma.
+  # luma values:
+  # luma = W_R * R + W_G * G + WB * B
+  # with W_R + W_G + W_B = 1024
+  histo_weight_r=146
+  histo_weight_g=806
+  histo_weight_b=72
+  #
+  # Leakage calculator configuration. The general format is:
+  #   leakage = luma_term(luma, dbv) * dbv_term(dbv)
+  # The luma_term maps luma into a value and different equations may be used
+  # depending on the current DBV value.
+  # Similar, the dbv_term maps DBV into a value and may also use different
+  # equations.
+  # Each line represents one equation, and is of the format:
+  #   start-dbv end-dbv equation-type {coefficients}
+  # This means the equation applies to the DBV range [start-dbv .. end-dbv].
+  # There are two equation types currently:
+  #    0: Polynominal: c0 + c1*L + c2*L^2 + .. + ci*L^i
+  #    1: Natural Log: c0 + c1*ln(L + c2)
+  histo_luma_eq0=0 0 0 0e0
+  histo_luma_eq1=1 4096 0 6.06737066e-02 1.17612775e-02 -4.95300514e-05 6.87088684e-08
+  histo_dbv_eq0=0 1 0 0e0
+  histo_dbv_eq1=1 1180 0 3.78392440E-01 1.32646914E-03 -1.10243171E-06 4.79657210E-10
+  histo_dbv_eq2=1181 3628 0 -8.43068174E+00 2.99067090E-02 -4.22122130E-05 3.04531291E-08 -1.17905136E-11 2.32750088E-15 -1.83322589E-19
+  histo_dbv_eq3=3629 4096 0 51
+
+  histo_modified_luma_eq0=0 0 0 0e0
+  histo_modified_luma_eq1=1 4096 0 6.06737066e-02 1.17612775e-02 -4.95300514e-05 6.87088684e-08
+  histo_modified_dbv_eq0=0 1 0 0e0
+  histo_modified_dbv_eq1=1 1180 0 -1.31308286E-02 4.17350000E-03 8.17500000E-06 -1.56550000E-08 7.38500000E-12
+  histo_modified_dbv_eq2=1181 3628 0 -4.68371208E+00 1.66148384E-02 -2.34512295E-05 1.69184051E-08 -6.55028535E-12 1.29305605E-15 -1.01845883E-19
+  histo_modified_dbv_eq3=3629 4096 0 20
+
+  # The maximum brightness (DBV) value up to which histogram is active.
+  # This value should match one of the itime_table_brightness values.
+  histo_max_brightness=4096
+  # Minimum change needed for a leakage value to be reported, i.e.,
+  # min_change = MAX(min_change_value, current_leakage_val * min_change_rate)
+  histo_min_change_value=0.01
+  histo_min_change_rate=0.01
+  # Histogram polling interval in ms.
+  histo_polling_interval=50
+  # Fallback luma value to use when histogram returns error (e.g., due to DRM).
+  histo_fallback_luma=128.0

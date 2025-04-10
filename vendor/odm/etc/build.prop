@@ -1,0 +1,32 @@
+####################################
+# from generate_common_build_props
+# These properties identify this partition image.
+####################################
+ro.product.odm.brand=google
+ro.product.odm.device=tegu
+ro.product.odm.manufacturer=Google
+ro.product.odm.model=Pixel 9a
+ro.product.odm.name=tegu
+ro.product.model_for_attestation=Pixel 9a
+ro.product.brand_for_attestation=google
+ro.product.name_for_attestation=tegu
+ro.product.device_for_attestation=tegu
+ro.product.manufacturer_for_attestation=Google
+ro.odm.product.cpu.abilist=arm64-v8a
+ro.odm.product.cpu.abilist32=
+ro.odm.product.cpu.abilist64=arm64-v8a
+ro.odm.build.date=Wed Mar 19 12:09:39 UTC 2025
+ro.odm.build.date.utc=1742386179
+ro.odm.build.fingerprint=google/tegu/tegu:15/BD4A.250405.003/13238919:user/release-keys
+ro.odm.build.id=BD4A.250405.003
+ro.odm.build.tags=release-keys
+ro.odm.build.type=user
+ro.odm.build.version.incremental=13238919
+ro.odm.build.version.release=15
+ro.odm.build.version.release_or_codename=15
+ro.odm.build.version.sdk=35
+####################################
+# from variable PRODUCT_ODM_PROPERTIES
+####################################
+# end of file
+
