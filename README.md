@@ -1,0 +1,14 @@
+# tegu-user 15 BD4A.250405.003 13238919 release-keys
+- manufacturer: google
+- platform: zumapro
+- codename: tegu
+- flavor: tegu-user
+- release: 15
+- id: BD4A.250405.003
+- incremental: 13238919
+- tags: release-keys
+- fingerprint: google/tegu/tegu:15/BD4A.250405.003/13238919:user/release-keys
+- is_ab: true
+- brand: google
+- branch: tegu-user-15-BD4A.250405.003-13238919-release-keys
+- repo: google_tegu_dump
